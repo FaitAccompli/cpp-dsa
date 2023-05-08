@@ -9,6 +9,7 @@ This repository contains the implementation of various data structures and algor
 - [Stack](./Data%20Structures/Stack)
 - [Queue](./Data%20Structures/Queue)
 - [Tree](./Data%20Structures/Tree)
+- [Hash Table](./Data%20Structures/HashTable)
 - [Graph](./Data%20Structures/Graph)
 
 ## Algorithms
