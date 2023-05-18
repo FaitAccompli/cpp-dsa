@@ -118,12 +118,8 @@ public:
             tail = pre;
             tail->next = nullptr;
         }
-
-        length--;
         delete temp;
-
-        // 1 => 2 => 3 => nullptr
-        // 1 => nullptr
+        length--;
     }
 
     void prepend(int value)
@@ -138,10 +134,10 @@ public:
         {
             newNode->next = head;
             head = newNode;
-            // 1,2,3,4 => nullptr
         }
         length++;
     }
+
     void deleteFirst()
     {
         if (length == 0)
@@ -159,50 +155,105 @@ public:
         delete temp;
         length--;
     }
+
     Node *get(int index)
     {
         if (index < 0 || index >= length)
-        {
             return nullptr;
-        }
-        else
+        Node *temp = head;
+        for (int i = 0; i < index; ++i)
         {
-            Node *temp = head;
-            for (int i = 0; i < index; i++)
-            {
-                temp = temp->next;
-            }
-            return temp;
+            temp = temp->next;
         }
-        // 1 => 2 => 4 => 6
-        // 1 => 2 => 4 => 6 => nullptr
-        // 0 => 1 => 2 => 3 => nullptr
+        return temp;
     }
+
     bool set(int index, int value)
     {
-        Node *temp = this->get(index);
+        Node *temp = get(index);
         if (temp)
         {
             temp->value = value;
             return true;
         }
-        else
+        return false;
+    }
+
+    bool insert(int index, int value)
+    {
+        // 0 -> 2
+        // insert 1 at index 1
+        // 0 -> 1 -> 2
+        if (index < 0 || index > length)
         {
             return false;
         }
+        if (index == 0)
+        {
+            prepend(value);
+            return true;
+        }
+        if (index == length)
+        {
+            append(value);
+            return true;
+        }
+        Node *newNode = new Node(value);
+        Node *temp = get(index - 1);
+        newNode->next = temp->next;
+        temp->next = newNode;
+        length++;
+        return true;
     }
 };
 
 int main()
 {
 
-    LinkedList *myLinkedList = new LinkedList(11);
+    LinkedList *myLinkedList = new LinkedList(1);
     myLinkedList->append(3);
-    myLinkedList->append(23);
-    myLinkedList->append(7);
+
+    cout << "LL before insert():" << endl;
     myLinkedList->printList();
 
-    myLinkedList->set(1, 4);
+    myLinkedList->insert(1, 2);
+
+    cout << "\nLL after insert(2) in middle:\n";
     myLinkedList->printList();
-    delete myLinkedList;
+
+    myLinkedList->insert(0, 0);
+
+    cout << "\nLL after insert(0) at beginning:\n";
+    myLinkedList->printList();
+
+    myLinkedList->insert(4, 4);
+
+    cout << "\nLL after insert(4) at end:\n";
+    myLinkedList->printList();
+
+    /*  EXPECTED OUTPUT:
+        ----------------
+        LL before insert():
+        1
+        3
+
+        LL after insert(2) in middle:
+        1
+        2
+        3
+
+        LL after insert(0) at beginning:
+        0
+        1
+        2
+        3
+
+        LL after insert(4) at end:
+        0
+        1
+        2
+        3
+        4
+
+    */
 }

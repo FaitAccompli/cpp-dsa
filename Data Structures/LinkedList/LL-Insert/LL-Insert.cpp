@@ -191,18 +191,63 @@ public:
             return false;
         }
     }
+    bool insert(int index, int value)
+    {
+        // 11 -> 3 -> 23 -> 7
+        // insert at index 2, the value 4
+        // 11 -> 3 -> 4 -> 23 -> 7
+        if (index < 0 || index > length)
+        {
+            return false;
+        }
+        if (index == 0)
+        {
+            prepend(value);
+            return true;
+        }
+        if (index == length)
+        {
+            append(value);
+            return true;
+        }
+        Node *newNode = new Node(value);
+        Node *temp = get(index - 1);
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+        length++;
+        return true;
+    }
 };
 
 int main()
 {
 
     LinkedList *myLinkedList = new LinkedList(11);
+    cout << "======Before Insert======" << endl;
     myLinkedList->append(3);
     myLinkedList->append(23);
     myLinkedList->append(7);
     myLinkedList->printList();
 
-    myLinkedList->set(1, 4);
+    cout << "======After Insert in middle======" << endl;
+    myLinkedList->insert(2, 4);
+    myLinkedList->printList();
+
+    cout << "======After Insert at index 0======" << endl;
+    myLinkedList->insert(0, 4);
+    myLinkedList->printList();
+
+    cout << "======After Insert at index equal length ======" << endl;
+    myLinkedList->insert(6, 4);
+    myLinkedList->printList();
+
+    cout << "======After Insert at index -1 ======" << endl;
+    myLinkedList->insert(-1, 4);
+    myLinkedList->printList();
+
+    cout << "======After Insert at index 7 ======" << endl;
+    myLinkedList->insert(8, 4);
     myLinkedList->printList();
     delete myLinkedList;
 }
