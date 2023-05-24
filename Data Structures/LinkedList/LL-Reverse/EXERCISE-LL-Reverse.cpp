@@ -209,14 +209,29 @@ public:
             return deleteFirst();
         if (index == length - 1)
             return deleteLast();
-        // 1, 2, 3, 4, 5
-        // delete at index 2
-        // 1, 2, 4, 5
+
         Node *prev = get(index - 1);
         Node *temp = prev->next;
+
         prev->next = temp->next;
         delete temp;
         length--;
+    }
+
+    void reverse()
+    {
+        Node *temp = head;
+        head = tail;
+        tail = temp;
+        Node *before = nullptr;
+        Node *after = temp->next;
+        while (temp)
+        {
+            after = temp->next;
+            temp->next = before;
+            before = temp;
+            temp = after;
+        }
     }
 };
 
@@ -227,49 +242,28 @@ int main()
     myLinkedList->append(2);
     myLinkedList->append(3);
     myLinkedList->append(4);
-    myLinkedList->append(5);
 
-    cout << "LL before deleteNode():\n";
+    cout << "LL before reverse():" << endl;
     myLinkedList->printList();
 
-    myLinkedList->deleteNode(2);
-    cout << "\nLL after deleteNode() in middle:\n";
+    myLinkedList->reverse();
+
+    cout << "\nLL after reverse():\n";
     myLinkedList->printList();
 
-    myLinkedList->deleteNode(0);
-    cout << "\nLL after deleteNode() of first node:\n";
-    myLinkedList->printList();
-
-    myLinkedList->deleteNode(2);
-    cout << "\nLL after deleteNode() of last node:\n";
-    myLinkedList->printList();
-
-    delete myLinkedList;
-
-    /*
-        EXPECTED OUTPUT:
+    /*  EXPECTED OUTPUT:
         ----------------
-        LL before deleteNode():
+        LL before reverse():
         1
         2
         3
         4
-        5
 
-        LL after deleteNode() in middle:
+        LL after reverse():
+        4
+        3
+        2
         1
-        2
-        4
-        5
-
-        LL after deleteNode() of first node:
-        2
-        4
-        5
-
-        LL after deleteNode() of last node:
-        2
-        4
 
     */
 }

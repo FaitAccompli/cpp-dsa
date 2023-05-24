@@ -118,8 +118,12 @@ public:
             tail = pre;
             tail->next = nullptr;
         }
-        delete temp;
+
         length--;
+        delete temp;
+
+        // 1 => 2 => 3 => nullptr
+        // 1 => nullptr
     }
 
     void prepend(int value)
@@ -134,10 +138,10 @@ public:
         {
             newNode->next = head;
             head = newNode;
+            // 1,2,3,4 => nullptr
         }
         length++;
     }
-
     void deleteFirst()
     {
         if (length == 0)
@@ -155,34 +159,47 @@ public:
         delete temp;
         length--;
     }
-
     Node *get(int index)
     {
         if (index < 0 || index >= length)
-            return nullptr;
-        Node *temp = head;
-        for (int i = 0; i < index; ++i)
         {
-            temp = temp->next;
+            return nullptr;
         }
-        return temp;
+        else
+        {
+            Node *temp = head;
+            for (int i = 0; i < index; i++)
+            {
+                temp = temp->next;
+            }
+            return temp;
+        }
+        // 1 => 2 => 4 => 6
+        // 1 => 2 => 4 => 6 => nullptr
+        // 0 => 1 => 2 => 3 => nullptr
     }
-
     bool set(int index, int value)
     {
-        Node *temp = get(index);
+        Node *temp = this->get(index);
         if (temp)
         {
             temp->value = value;
             return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
-
     bool insert(int index, int value)
     {
+        // 11 -> 3 -> 23 -> 7
+        // insert at index 2, the value 4
+        // 11 -> 3 -> 4 -> 23 -> 7
         if (index < 0 || index > length)
+        {
             return false;
+        }
         if (index == 0)
         {
             prepend(value);
@@ -195,81 +212,83 @@ public:
         }
         Node *newNode = new Node(value);
         Node *temp = get(index - 1);
+
         newNode->next = temp->next;
         temp->next = newNode;
         length++;
         return true;
     }
-
     void deleteNode(int index)
     {
+
         if (index < 0 || index >= length)
             return;
         if (index == 0)
             return deleteFirst();
         if (index == length - 1)
             return deleteLast();
-        // 1, 2, 3, 4, 5
-        // delete at index 2
-        // 1, 2, 4, 5
+        // 11 -> 3 -> 23 -> 7 -> nullptr
+        // 0  -> 1 -> 2  -> 3 -> nullptr
+        // remove node at index 2
         Node *prev = get(index - 1);
         Node *temp = prev->next;
         prev->next = temp->next;
         delete temp;
         length--;
+        return;
+    }
+    void reverse()
+    {
+        // before reverse
+        // h                t
+        // 11 -> 3 -> 23 -> 7 -> nullptr
+        // after reverse
+        //             t               h
+        // nullptr <- 11 <- 3 <- 23 <- 7
+        Node *temp = head;
+        Node *before = nullptr;
+        Node *after = temp->next;
+        head = tail;
+        tail = temp;
+        while (temp)
+        {
+            after = temp->next;
+            temp->next = before;
+            before = temp;
+            temp = after;
+            // before     temp  after
+            // nullptr -> 11 -> 3 -> 23 -> 7 -> nullptr
+            //            before temp
+            // nullptr <- 11 -> 3 -> 23 -> 7 -> nullptr
+            //              before   temp
+            // nullptr <- 11 <- 3 -> 23 -> 7 -> nullptr
+            //                     before temp
+            // nullptr <- 11 <- 3 <- 23 -> 7 -> nullptr
+            //                          before  temp
+            // nullptr <- 11 <- 3 <- 23 <- 7 -> nullptr
+        }
     }
 };
 
 int main()
 {
 
-    LinkedList *myLinkedList = new LinkedList(1);
-    myLinkedList->append(2);
+    LinkedList *myLinkedList = new LinkedList(11);
     myLinkedList->append(3);
-    myLinkedList->append(4);
-    myLinkedList->append(5);
-
-    cout << "LL before deleteNode():\n";
+    myLinkedList->append(23);
+    myLinkedList->append(7);
+    cout << "======Before Reverse======" << endl;
+    // 11 -> 3 -> 23 -> 7 -> nullptr
+    myLinkedList->getHead();
+    myLinkedList->getTail();
     myLinkedList->printList();
 
-    myLinkedList->deleteNode(2);
-    cout << "\nLL after deleteNode() in middle:\n";
-    myLinkedList->printList();
-
-    myLinkedList->deleteNode(0);
-    cout << "\nLL after deleteNode() of first node:\n";
-    myLinkedList->printList();
-
-    myLinkedList->deleteNode(2);
-    cout << "\nLL after deleteNode() of last node:\n";
+    cout << "======After Reverse======" << endl;
+    // 7 -> 23 -> 3 -> 11 -> nullptr
+    myLinkedList->reverse();
+    myLinkedList->getHead();
+    myLinkedList->getTail();
     myLinkedList->printList();
 
     delete myLinkedList;
-
-    /*
-        EXPECTED OUTPUT:
-        ----------------
-        LL before deleteNode():
-        1
-        2
-        3
-        4
-        5
-
-        LL after deleteNode() in middle:
-        1
-        2
-        4
-        5
-
-        LL after deleteNode() of first node:
-        2
-        4
-        5
-
-        LL after deleteNode() of last node:
-        2
-        4
-
-    */
 }
